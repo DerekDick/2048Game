@@ -1,17 +1,24 @@
+#pragma warning(disable:4996)
+
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <cstdlib>
 #include <ctime>
 #include <iomanip>
 
 using namespace std;
 
-int numbers[4][4] = {};//The two dimentional array to store the numbers
-int tempUnit[4] = {};//For function move()
+int numbers[4][4] = {}; //The two dimentional array to store the numbers
+int tempUnit[4] = {}; //For function move()
 unsigned score = 0;
-int validity = 0;//The validity of the user's move(0 represent invalidity and 1 represent validity)
-char option = 0;//The option of the user
-ofstream logfile("2048Game.log");//The log file
+int validity = 0; //The validity of the user's move(0 represent invalidity and 1 represent validity)
+char option = 0; //The option of the user
+string username, logFileName = "2048Game_";
+ofstream logfile("2048Game.log"); //The log file
+ofstream record("2048record.txt", ios::app); //The record file
+//ofstream userInfo("userInfo.xxx", ios::app); //The users' information
+char* currentLocalTime();
 
 void morge(void);
 void printNums(void);
@@ -24,11 +31,20 @@ void merge(void);
 
 int main() {
 	//Specify the rules of the game
-	cout << "//By DerekDick v1.0" << endl 
-		<< "Welcome to 2048 Game!" << endl
+	cout << "By DerekDick" << endl 
+		<< "Welcome to 2048 Game version2.0!" << endl
 		<< "Press w/a/s/d and enter key to move the blocks." << endl
 		<< "For example, if you want to move left, just press \"a\" and the enter key." << endl;
 	
+	//Get the user's name
+	cout << "Please type in your name(no longer than 16 characters):" << endl;
+	while (cin >> username) {
+		if (username.length() <= 16)
+			break;
+		else
+			cout << "The name is too longer! Please try another shorter name:\a" << endl;
+	}
+
 	//Initalization
 	addRandom();
 	addRandom();
@@ -51,13 +67,24 @@ int main() {
 		printNums();
 	}
 
+	//Write the result into the record file
+	record << setw(16) << left << username << ' ' << setw(6) << right << score << endl;
+
+	logfile.close();
+	record.close();
+
+	//Rename the log file according to the current time
+	string newlogname = username + currentLocalTime() + ".log";
+	rename("2048Game.log", newlogname.c_str());
+	logfile.close();
+
 	system("pause");
 
 	return 0;
 }
 
 void morge(void) {
-	//This function is used to morge(move and merge) the number blocks
+	/*This function is used to morge(move and merge) the number blocks*/
 	switch (option) {
 	case 'w':
 		for (int j = 0; j <= 3; j++) {
@@ -265,4 +292,14 @@ void merge(void) {
 	}
 
 	return;
+}
+
+char* currentLocalTime() {
+	/*This function is used to get the current local time*/
+	const time_t t = time(0);
+	struct tm* now = localtime(&t);
+	static char currentTime[14] = "";
+	sprintf(currentTime, "%04d%02d%02d%02d%02d%02d", now->tm_year + 1900, now->tm_mon + 1, now->tm_mday, now->tm_hour, now->tm_min, now->tm_sec);
+
+	return currentTime;
 }
