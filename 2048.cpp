@@ -7,16 +7,14 @@
 #include <ctime>
 #include <iomanip>
 
-using namespace std;
-
 int numbers[4][4] = {}; //The two dimentional array to store the numbers
 int tempUnit[4] = {}; //For function move()
 unsigned score = 0;
 int validity = 0; //The validity of the user's move(0 represent invalidity and 1 represent validity)
 char option = 0; //The option of the user
-string username, logFileName = "2048Game_";
-ofstream logfile("2048Game.log"); //The log file
-ofstream record("2048record.txt", ios::app); //The record file
+std::string username;
+std::ofstream logfile("2048Game.log"); //The log file
+std::ofstream record("2048record.txt", std::ios::app); //The record file
 //ofstream userInfo("userInfo.xxx", ios::app); //The users' information
 char* currentLocalTime();
 
@@ -31,18 +29,18 @@ void merge(void);
 
 int main() {
 	//Specify the rules of the game
-	cout << "By DerekDick" << endl 
-		<< "Welcome to 2048 Game version2.0!" << endl
-		<< "Press w/a/s/d and enter key to move the blocks." << endl
-		<< "For example, if you want to move left, just press \"a\" and the enter key." << endl;
+	std::cout << "By DerekDick" << std::endl 
+		<< "Welcome to 2048 Game version2.0!" << std::endl
+		<< "Press w/a/s/d and enter key to move the blocks." << std::endl
+		<< "For example, if you want to move left, just press \"a\" and the enter key." << std::endl;
 	
 	//Get the user's name
-	cout << "Please type in your name(no longer than 16 characters):" << endl;
-	while (cin >> username) {
+	std::cout << "Please type in your name(no longer than 16 characters):" << std::endl;
+	while (std::cin >> username) {
 		if (username.length() <= 16)
 			break;
 		else
-			cout << "The name is too longer! Please try another shorter name:\a" << endl;
+			std::cout << "The name is too longer! Please try another shorter name:\a" << std::endl;
 	}
 
 	//Initalization
@@ -51,11 +49,11 @@ int main() {
 	printNums();
 
 	//Turns in loops
-	while (cin >> option) {
+	while (std::cin >> option) {
 		//Check if the player is dead
 		if (!isAlive()) {
 			system("color fc");
-			cout << "You lose!!!\a" << endl;
+			std::cout << "You lose!!!\a" << std::endl;
 			break;
 		}
 
@@ -68,13 +66,13 @@ int main() {
 	}
 
 	//Write the result into the record file
-	record << setw(16) << left << username << ' ' << setw(6) << right << score << endl;
+	record << std::setw(16) << std::left << username << ' ' << std::setw(6) << std::right << score << std::endl;
 
 	logfile.close();
 	record.close();
 
 	//Rename the log file according to the current time
-	string newlogname = username + currentLocalTime() + ".log";
+	std::string newlogname = username + currentLocalTime() + ".log";
 	rename("2048Game.log", newlogname.c_str());
 	logfile.close();
 
@@ -148,7 +146,7 @@ void morge(void) {
 		break;
 	default:
 		system("color cf");
-		cout << "Illegal input!!!\a" << endl;
+		std::cout << "Illegal input!!!\a" << std::endl;
 	}
 	system("color 0a");
 	system("color");
@@ -161,20 +159,20 @@ void printNums(void) {
 	for (i = 0; i <= 3; i++) {
 		for (j = 0; j <= 3; j++) {
 			if (numbers[i][j] != 0) {
-				cout << setw(6) << numbers[i][j] << ' ';
-				logfile << setw(6) << numbers[i][j] << ' ';
+				std::cout << std::setw(6) << numbers[i][j] << ' ';
+				logfile << std::setw(6) << numbers[i][j] << ' ';
 			}
 			else {
 				printf("       ");
 				logfile << "       ";
 			}
 		}
-		cout << endl;
-		logfile << endl;
+		std::cout << std::endl;
+		logfile << std::endl;
 	}
-	cout << "Score: " << score << endl;
-	logfile << option << " Score = " << score << endl;
-	logfile << "------------------------------" << endl;
+	std::cout << "Score: " << score << std::endl;
+	logfile << option << " Score = " << score << std::endl;
+	logfile << "------------------------------" << std::endl;
 
 	return;
 }
