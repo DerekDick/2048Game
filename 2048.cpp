@@ -7,7 +7,7 @@
 #include <ctime>
 #include <iomanip>
 
-int numbers[4][4] = {}; //The two dimentional array to store the numbers
+int numbers[4][4] = {{}}; //The two dimentional array to store the numbers
 int tempUnit[4] = {}; //For function move()
 unsigned score = 0;
 int validity = 0; //The validity of the user's move(0 represent invalidity and 1 represent validity)
@@ -149,7 +149,6 @@ void morge(void) {
 		std::cout << "Illegal input!!!\a" << std::endl;
 	}
 	system("color 0a");
-	system("color");
 	return;
 }
 
