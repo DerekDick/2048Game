@@ -5,12 +5,12 @@
 #include <ctime>
 #include <iomanip>
 
-int numbers[4][4] = {{}}; //The two dimentional array to store the numbers
+int numbers[4][4] = {}; //The two dimentional array to store the numbers
 int tempUnit[4] = {}; //For function move()
 unsigned score = 0;
 int validity = 0; //The validity of the user's move(0 represent invalidity and 1 represent validity)
 char option = 0; //The option of the user
-std::string username;
+std::string username, logFileName = "2048Game_";
 std::ofstream logfile("2048Game.log"); //The log file
 std::ofstream record("2048record.txt", std::ios::app); //The record file
 //ofstream userInfo("userInfo.xxx", ios::app); //The users' information
@@ -147,6 +147,7 @@ void morge(void) {
 		std::cout << "Illegal input!!!\a" << std::endl;
 	}
 	system("color 0a");
+	system("color");
 	return;
 }
 
