@@ -1,20 +1,12 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <cstdlib>
-#include <ctime>
-#include <iomanip>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
-int numbers[4][4] = {}; //The two dimentional array to store the numbers
-int tempUnit[4] = {}; //For function move()
+int numbers[4][4] = {}; // The two dimentional array to store the numbers
+int tempUnit[4] = {}; // For function move()
 unsigned score = 0;
-int validity = 0; //The validity of the user's move(0 represent invalidity and 1 represent validity)
-char option = 0; //The option of the user
-std::string username, logFileName = "2048Game_";
-std::ofstream logfile("2048Game.log"); //The log file
-std::ofstream record("2048record.txt", std::ios::app); //The record file
-//ofstream userInfo("userInfo.xxx", ios::app); //The users' information
-char* currentLocalTime();
+int validity = 0; // The validity of the user's move(0 represent invalidity and 1 represent validity)
+char option = 0; // The option of the user
 
 void morge(void);
 void printNums(void);
@@ -25,62 +17,41 @@ void addRandom(void);
 void move(void);
 void merge(void);
 
-int main() {
-	//Specify the rules of the game
-	std::cout << "By DerekDick" << std::endl 
-		<< "Welcome to 2048 Game version2.0!" << std::endl
-		<< "Press w/a/s/d and enter key to move the blocks." << std::endl
-		<< "For example, if you want to move left, just press \"a\" and the enter key." << std::endl;
-	
-	//Get the user's name
-	std::cout << "Please type in your name(no longer than 16 characters):" << std::endl;
-	while (std::cin >> username) {
-		if (username.length() <= 16)
-			break;
-		else
-			std::cout << "The name is too longer! Please try another shorter name:\a" << std::endl;
-	}
+int main(int argc, char* argv[]) {
+	// Specify the rules of the game
+	printf("By DerekDick\n");
+	printf("Welcome to 2048 Game!\n");
+	printf("Press w/a/s/d and enter key to move the blocks.\n");
+	printf("For example, if you want to move left, just press \"a\" and the enter key.\n");
 
-	//Initalization
+	// Initalization
 	addRandom();
 	addRandom();
 	printNums();
 
-	//Turns in loops
-	while (std::cin >> option) {
-		//Check if the player is dead
+	// Turns in loops
+    while (scanf(" %c", &option)) {
+		// Check if the player is dead
 		if (!isAlive()) {
-			system("color fc");
-			std::cout << "You lose!!!\a" << std::endl;
+            printf("You lose!!!\a\n");
 			break;
 		}
 
 		morge();
-		if (validity)
+		if (validity) {
 			addRandom();
+		}
 		validity = 0;
-		system("cls");
+		
 		printNums();
 	}
-
-	//Write the result into the record file
-	record << std::setw(16) << std::left << username << ' ' << std::setw(6) << std::right << score << std::endl;
-
-	logfile.close();
-	record.close();
-
-	//Rename the log file according to the current time
-	std::string newlogname = username + currentLocalTime() + ".log";
-	rename("2048Game.log", newlogname.c_str());
-	logfile.close();
-
-	system("pause");
 
 	return 0;
 }
 
 void morge(void) {
-	/*This function is used to morge(move and merge) the number blocks*/
+	/* Morges(moves and merges) the number blocks */
+	
 	switch (option) {
 	case 'w':
 		for (int j = 0; j <= 3; j++) {
@@ -143,40 +114,34 @@ void morge(void) {
 		}
 		break;
 	default:
-		system("color cf");
-		std::cout << "Illegal input!!!\a" << std::endl;
+        printf("Illegal input!!!\a\n");
 	}
-	system("color 0a");
-	system("color");
 	return;
 }
 
 void printNums(void) {
-	//This function is used to print out the blocks of numbers
+	/* Prints out the blocks of numbers */
+	
 	int i, j;
 	for (i = 0; i <= 3; i++) {
 		for (j = 0; j <= 3; j++) {
 			if (numbers[i][j] != 0) {
-				std::cout << std::setw(6) << numbers[i][j] << ' ';
-				logfile << std::setw(6) << numbers[i][j] << ' ';
+                printf("%7d", numbers[i][j]);
 			}
 			else {
 				printf("       ");
-				logfile << "       ";
 			}
 		}
-		std::cout << std::endl;
-		logfile << std::endl;
+		printf("\n");
 	}
-	std::cout << "Score: " << score << std::endl;
-	logfile << option << " Score = " << score << std::endl;
-	logfile << "------------------------------" << std::endl;
+	printf("Score: %d\n", score);
 
 	return;
 }
 
 bool isAlive(void) {
-	//This function is used to check if the player is still alive
+	/* Checks if the player is still alive */
+	
 	if (zeroNum()) {
 		return true;
 	}
@@ -188,8 +153,9 @@ bool isAlive(void) {
 }
 
 bool canEliminate(void) {
-	//This function is used to check if the number blocks(BLOCLED!!!) can be eliminated
-	//Rows
+	/* Checks if the number blocks(BLOCLED!!!) can be eliminated */
+	
+    // Rows
 	for (int i = 0; i <= 3; i++) {
 		for (int j = 0; j <= 2; j++) {
 			if (numbers[i][j] == numbers[i][j + 1])
@@ -197,7 +163,7 @@ bool canEliminate(void) {
 		}
 	}
 
-	//Columns
+	// Columns
 	for (int i = 0; i <= 2; i++) {
 		for (int j = 0; j <= 3; j++) {
 			if (numbers[i][j] == numbers[i + 1][j])
@@ -209,7 +175,8 @@ bool canEliminate(void) {
 }
 
 int zeroNum(void) {
-	//This function is used to count the number of zeroes in the number block
+	/* Counts the number of zeroes in the number block */
+	
 	int count = 0;
 	for (int i = 0; i <= 3; i++) {
 		for (int j = 0; j <= 3; j++) {
@@ -221,9 +188,12 @@ int zeroNum(void) {
 }
 
 void addRandom(void) {
-	//This function is used to add one 2 into a random empty place
-	srand(int(time(0)));//Random seed
-	int index = rand() % zeroNum();
+	/* This function is used to add one 2 into a random empty place */
+	
+	// The random seed
+	srand(int(time(0)));
+	
+    int index = rand() % zeroNum();
 	int position = 0;
 	for (int i = 0; i <= 3; i++) {
 		for (int j = 0; j <= 3; j++) {
@@ -236,12 +206,14 @@ void addRandom(void) {
 			}
 		}
 	}
+	
 	return;
 }
 
 void move(void) {
 	int current = -1, count = 0;
-	//Positioning the first zero in this unit
+	
+    // Positioning the first zero in this unit
 	for (int i = 0; i <= 2; i++) {
 		if (tempUnit[i] == 0) {
 			current = i;
@@ -249,12 +221,12 @@ void move(void) {
 		}
 	}
 
-	//No zeroes in this unit
+	// No zeroes in this unit
 	if (current == -1) {
 		return;
 	}
 
-	//Move the zero(es) back
+	// Move the zero(es) back
 	for (; current <= 2; ) {
 		if (tempUnit[current + 1] == 0) {
 			count++;
@@ -290,12 +262,3 @@ void merge(void) {
 	return;
 }
 
-char* currentLocalTime() {
-	/*This function is used to get the current local time*/
-	const time_t t = time(0);
-	struct tm* now = localtime(&t);
-	static char currentTime[14] = "";
-	sprintf(currentTime, "%04d%02d%02d%02d%02d%02d", now->tm_year + 1900, now->tm_mon + 1, now->tm_mday, now->tm_hour, now->tm_min, now->tm_sec);
-
-	return currentTime;
-}
